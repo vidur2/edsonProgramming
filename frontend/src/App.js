@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 const HOSTNAME = "http://localhost:5001/"
 
 async function sendPower(isLeft, power) {
@@ -17,29 +17,54 @@ async function sendPower(isLeft, power) {
 
   await fetch(HOSTNAME, {
     method: "POST",
-    body
+    body: JSON.stringify(body)
   })
 }
 
 function App() {
+  const [clicked, setClicked] = useState(false);
   useEffect(() => {
-    const leftBtn = document.getElementById("left");
-    const rightBtn = document.getElementById("right");
+    const fLeft = document.getElementById("left");
+    const fRight = document.getElementById("right");
+    const bLeft = document.getElementById("bleft");
+    const bRight = document.getElementById("bright")
 
-    leftBtn.ontouchstart = () => {
-      sendPower(true, 0.5);
+
+    fLeft.onclick = () => {
+
+      if (!clicked) {
+        sendPower(true, 0.5);
+      } else {
+        sendPower(true, 0);
+      }
+      setClicked(!clicked);
     }
 
-    rightBtn.ontouchstart = () => {
-      sendPower(false, 0.5)
+    fRight.onclick = () => {
+      if (!clicked) {
+        sendPower(false, 0.5);
+      } else {
+        sendPower(false, 0);
+      }
+      setClicked(!clicked);
     }
 
-    rightBtn.ontouchend = () => {
-      sendPower(false, 0);
+    bLeft.onclick = () => {
+      if (!clicked) {
+        sendPower(true, -0.5);
+      } else {
+        sendPower(true, 0);
+      }
+      setClicked(!clicked);
     }
 
-    leftBtn.ontouchend = () => {
-      sendPower(true, 0)
+    bRight.onclick = () => {
+      if (!clicked) {
+        sendPower(false, -0.5);
+      } else {
+        sendPower(false, 0);
+      }
+      setClicked(!clicked);
     }
   })
   
@@ -47,8 +72,12 @@ function App() {
     <div className="App">
       <table>
         <tr>
-          <td><button id="left">Left</button></td>
-          <td><button id="right">Right</button></td>
+          <td><button id="left">Forward Left</button></td>
+          <td><button id="right">Forward Right</button></td>
+        </tr>
+        <tr>
+          <td><button id="bleft">Backward Left</button></td>
+          <td><button id="bright">Backward Right</button></td>
         </tr>
       </table>
     </div>
